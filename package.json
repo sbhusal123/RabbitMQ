@@ -1,0 +1,16 @@
+{
+  "name": "rabbit-mq",
+  "version": "1.0.0",
+  "description": "Sample project to learn using rabbit-mq broker",
+  "main": "publisher.js",
+  "dependencies": {
+    "amqplib": "^0.5.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "publish": "node publisher.js",
+    "consume": "node consumer.js"
+  },
+  "author": "Surya Bhusal",
+  "license": "ISC"
+}
