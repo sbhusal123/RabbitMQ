@@ -1,8 +1,8 @@
-# Publish/Subscribe 
+# Publish/Subscribe
 - Deliver a message to multiple consumer.
 - Distributed Publisher Subscriber Pattern.
 - Demo Example: consist of two programs -- the first will emit log messages and 
-the second will receive and print them
+the second will receive and print them using fanout exchange.
 
 ## 1. Exchange
 - Producer never sends any messages directly to a queue, can only send messages to an exchange.
@@ -29,9 +29,27 @@ the second will receive and print them
     - Routes messages to queues whose routing key matches all, or a portion of a routing key.
     
     ![Topic Exchange](../../Images/topic_exchange.png)
+
+    ### 1.4. How?
+    - **Exchange Type Declaration:** ``channel.exchange_declare(exchange='<name>',exchange_type='<type>')``
+    - **Publish message to exchange** ``channel.basic_publish(exchange='<name>',routing_key='<key>',body=message)``
+
+## 2. Random Queue generation
+- Can be declared passing **empty string to queue in queue_declare**: ``my_queue = channel.queue_declare(queue='')``
+- Get the queue name : ``my_queue.method.name``
     
-    
-    
-    
-    
-    
+
+## 3. Using Temporary Queue
+- Fresh queue is created when connected to RabbitMQ.
+- Once the consumer connection is closed, the queue is deleted.
+- Declaration using **exclusive=True in queue_declare method**: ``channel.queue_declare(queue='<name>', exclusive=True)``
+
+## 4. Binding
+- Relationship between exchange and a queue is called a binding.
+- Useful to enqueue a message received by exchange to the queue. 
+- Messages will be lost if no queue is bound to the exchange.
+- Bind **using queue_bind method of channel object**: ``channel.queue_bind(exchange='<ex_name>',queue=<q_name>)``
+
+## 5.Handy Commands
+- **List Exchange:** ``rabbitmqctl list_exchanges``
+- **List Bindings:** ``rabbitmqctl list_bindings``
