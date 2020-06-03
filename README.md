@@ -28,5 +28,6 @@
 
     ![](https://www.cloudamqp.com/img/blog/exchanges-topic-fanout-direct.png)
 
-## 3. Demo Tutorial:
+## 3. Setup:
+- To run the codes in the files you need RabbitMQ server installed or you can.
 - Spin up RabbitMQ Docker Container: ``docker run --name rabbitmq -p 5672:5672 rabbitmq``
