@@ -23,9 +23,9 @@
 2. Create connection to server.
 3. Create/Get the exchange type with name.
 4. Create a random temporary queue and get it's name.
-5. Bind the queue to the exchange.
+5. Bind the queue to the exchange with routing_key.
 6. Define callback method.
-7. Consume with basic_consume passing callback, queue_name and routing_key.
+7. Consume with basic_consume passing callback, queue_name and auto_ack.
 8. Start consuming.
 ```
 

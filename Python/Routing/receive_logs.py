@@ -10,7 +10,7 @@ Summary:
 - Create a random temporary queue and get it's name.
 - Bind the queue to the exchange.
 - Define callback method.
-- Consume with basic_consume passing callback, queue_name and routing_key.
+- Consume with basic_consume passing callback, queue_name and auto_ack.
 - Start consuming.
 """
 
