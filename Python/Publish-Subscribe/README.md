@@ -23,12 +23,12 @@ the second will receive and print them
     - Routes messages to all bound queues indiscriminately.
     - If routing key available, ignored.
     
-    ![Fanout Exchange](../../Images/Fanout Exchange.png)
+    ![Fanout Exchange](../../Images/fanout_exchange.png)
     
     ### 1.3. Topic Exchange
     - Routes messages to queues whose routing key matches all, or a portion of a routing key.
     
-    ![Topic Exchange](../../Images/Topic Exchange.png)
+    ![Topic Exchange](../../Images/topic_exchange.png)
     
     
     
