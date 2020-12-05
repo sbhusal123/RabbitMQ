@@ -4,6 +4,8 @@
 
 - Supports sending and receiving messages between distributed systems.
 
+
+
 ## 1. Procuder, Consumer, Queue
 
 - **Producer** is a user application that sends messages.
@@ -31,3 +33,9 @@
 ## 3. Setup:
 - To run the codes in the files you need RabbitMQ server installed or you can.
 - Spin up RabbitMQ Docker Container: ``docker run --name rabbitmq -p 5672:5672 rabbitmq``
+
+## 4. Contents
+- [Publish/Subscribe](https://github.com/sbhusal123/RabbitMQ/tree/master/Python/Publish-Subscribe)
+- [Messages Routing](https://github.com/sbhusal123/RabbitMQ/tree/master/Python/Routing)
+- [Topic Based Exchange](https://github.com/sbhusal123/RabbitMQ/tree/master/Python/Topic)
+- [Message Durability and Acknowledgment, Fair Dispatch of Workload](https://github.com/sbhusal123/RabbitMQ/tree/master/Python/Working%20Queue)
