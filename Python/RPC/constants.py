@@ -1,0 +1,4 @@
+FIBONACI_RPC_QUEUE= 'rpc_fibonacci_queue'
+ADDITION_RPC_QUEUE= 'rpc_addition_queue'
+FIBONACI_CALLBACK_RPC_QUEUE= 'rpc_fibonacci_callback_queue'
+ADDITION_CALLBACK_RPC_QUEUE= 'rpc_addition_callback_queue'
