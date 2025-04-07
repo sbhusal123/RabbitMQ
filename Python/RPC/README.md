@@ -16,6 +16,85 @@ Here, we implement a RPC call with callback queue. Basically client initiating a
 - **List exchange bindings:**  ``sudo rabbitmqctl list_bindings``
 
 
+## a. Pushing data to queue (Publishing Item)
+
+Since, we dont push / publish directly to queue, instead we basic_publish to exchange with routing_key.
+
+```python
+    # if exchange name is empty, then the message is pushed to the queue with exact name of routing key.
+    ch.basic_publish(
+        exchange='',
+        routing_key="<routing_key>",
+        properties=pika.BasicProperties(
+            # reply back to queue
+            reply_to="<reply_to>"
+        ),
+        body="<message>"
+    )
+```
+
+In above case, message is dlrectly pushed to queue with same as routing_name. Let's see few other cases.
+
+```python
+# ---------------------------------------------------------------------------------------------------
+Exchange Type: direct
+Routing Key: 'info'
+Binding Key: 'info'
+Match: ✅ YES
+
+channel.exchange_declare(exchange='direct_logs', exchange_type='direct')
+channel.queue_bind(exchange='direct_logs', queue='info_queue', routing_key='info')
+channel.basic_publish(exchange='direct_logs', routing_key='info', body='Log: info')
+# Message with routing_key='info' is delivered to info_queue.
+# ---------------------------------------------------------------------------------------------------
+Routing Key: 'user.signup'
+Binding Key: 'user.*'
+Match: ✅ YES
+
+channel.exchange_declare(exchange='topic_logs', exchange_type='topic')
+channel.queue_bind(exchange='topic_logs', queue='signup_queue', routing_key='user.*')
+
+channel.basic_publish(exchange='topic_logs', routing_key='user.signup', body='Signup Event')
+# Message is routed based on pattern in binding key.
+# ---------------------------------------------------------------------------------------------------
+```
+
+Note, that the exchange_type and routing key is what defines in which queue the message is going to be routed to.
+
+## b. Consuming an Item:
+
+```python
+
+def callback(ch, method, properties, body):
+    print(f" [x] Received: {body.decode()}")
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+
+    # if responding back to queue specified by client
+    ch.basic_publish(
+        exchange='', # if exchange is empty then item pushed to queue with name routing_key
+        routing_key=props.reply_to, # client specifies which queue to reply to.
+        properties=pika.BasicProperties(correlation_id=props.correlation_id),
+        body=str(response)
+    )
+
+channel.basic_consume(
+    queue=queue_name,
+    on_message_callback=on_request
+)
+
+# client must basic_publish with reply to params
+channel.basic_publish(
+    exchange='',
+    # queue name of rpc queue
+    routing_key=ADDITION_RPC_QUEUE,
+    properties=pika.BasicProperties(
+        # queue name where we will listen for response
+        reply_to=ADDITION_CALLBACK_RPC_QUEUE
+    ),
+    body=f"{x},{y}"
+)
+```
+
 
 ## 1. Base Class for Our Worker
 
@@ -94,6 +173,7 @@ def on_request(self, ch, method, props, body):
     response = self.fib(n)
 
     # publish back the response to the callback queue client listens on
+    # here we havent declared a exchange, so the message will be routed directly to the queue defined with routing_key.
     ch.basic_publish(
         exchange='',
         routing_key=props.reply_to,
@@ -111,8 +191,8 @@ def on_request(self, ch, method, props, body):
 **1. When message is recieved, callback function recieves following params:**
 - ``ch:`` The channel object through which the message was received.
 - ``method:`` Contains delivery information like delivery_tag.
-- ``properties:`` The properties of the message — includes things like reply_to (the callback queue) and correlation_id (used to match request with response).
-- ``body:`` The actual message payload (as bytes), which in this case is expected to contain two integers separated by a comma (like "3,5").
+- ``properties:`` The properties of the message — includes things like **reply_to (the callback queue)** and **correlation_id (used to match request with response)**.
+- ``body:`` The actual message payload **(as bytes => decode it)**, which in this case is expected to contain two integers separated by a comma (like "3,5").
 
 
 **2. basic_publish Parameters: => Putting item to callback queue for client**
@@ -125,6 +205,8 @@ def on_request(self, ch, method, props, body):
 - ``properties`` => Allows you to attach metadata to your RabbitMQ message. This metadata is useful for things like message tracking, reply routing, content type, and more.
     - ``correlation_id`` => Used to track request-response pairs (very useful for RPC).
     - ``reply_to`` => Tells the consumer where to send the response (queue name).
+
+Note that, when 
 
 
 **3. acknowledging with basic_ack**
@@ -167,6 +249,8 @@ if __name__ == "__main__":
 ## 4. Client Implementation:
 
 Basically, here a client will listen on a callback queue specified when making a RPC call with ``basic_publish``
+
+Here, we are specifying from a client script, in which queue should the rpc server respond back after finishing computation.
 
 ```python
 import pika

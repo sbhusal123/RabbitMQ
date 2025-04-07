@@ -12,11 +12,23 @@
 
 - **Queue** is a buffer that stores messages.
 
-- **Consumer** is a user application that receives messages.
+- **Consumer** is a user application that receives messages or is listening on queue.
 
 - **Exchange:** receives messages from producers and the other side it pushes them to queues.
 
 - **Channel:** Acts as a multiplexer to perform multiple logical connection to the broker, can be thought as "lightweight connections that share a single TCP connection". [Read More...](https://www.rabbitmq.com/channels.html#basics)
+
+- **Routing Key:** Routing Key and Exchange Type Together Defines which queue from the exchange will message be delivered to.
+
+
+**Produce**
+- Message is pushed to exchange with a routing key.
+- Routing Key with Exchange type defines which queue to push item to.
+
+**Consumer:**
+- Is not concerned with exchange.
+- Is more of concerned directly with queue. So, whenever a message is recieved on queue, performs action.
+
 
 ## 2. Messaging Model:
 
@@ -35,7 +47,8 @@
 - Spin up RabbitMQ Docker Container: ``docker run --name rabbitmq -p 5672:5672 rabbitmq``
 
 ## 4. Contents
-- [Publish/Subscribe](https://github.com/sbhusal123/RabbitMQ/tree/master/Python/Publish-Subscribe)
-- [Messages Routing](https://github.com/sbhusal123/RabbitMQ/tree/master/Python/Routing)
-- [Topic Based Exchange](https://github.com/sbhusal123/RabbitMQ/tree/master/Python/Topic)
-- [Message Durability and Acknowledgment, Fair Dispatch of Workload](https://github.com/sbhusal123/RabbitMQ/tree/master/Python/Working%20Queue)
+- [Publish/Subscribe](./Python/Publish-Subscribe)
+- [Messages Routing](./Python/Routing)
+- [Topic Based Exchange](./Python/Topic)
+- [Message Durability and Acknowledgment, Fair Dispatch of Workload](./Python/Working%20Queue)
+- [RPC Clients And Server and Few Summary](./Python/RPC)
