@@ -1,0 +1,4 @@
+FIBONACI_QUEUE='fibonacci_queue'
+ADDITION_QUEUE='addition_queue'
+FIBONACI_CALLBACK_QUEUE='fibonacci_callback_queue'
+ADDITION_CALLBACK_QUEUE='addition_callback_queue'

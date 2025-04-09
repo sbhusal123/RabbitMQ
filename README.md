@@ -51,4 +51,8 @@
 - [Messages Routing](./Python/Routing)
 - [Topic Based Exchange](./Python/Topic)
 - [Message Durability and Acknowledgment, Fair Dispatch of Workload](./Python/Working%20Queue)
-- [RPC Clients And Server and Few Summary](./Python/RPC)
+
+
+## 5. Case Studies:
+- [Callback Queue and Workers Implementation](./Case%20Study/Callback%20Worker)
+- [RPC](./Case%20Study/RPC%20Implementation/)

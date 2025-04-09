@@ -1,14 +1,12 @@
 import multiprocessing
-import pika
-import multiprocessing
 
 import utils
 import constants
 
 
-class FibonacciRpcServer(utils.BaseRpcServer):
+class FibonacciServer(utils.BaseServer):
     def __init__(self):
-        super().__init__(constants.FIBONACI_RPC_QUEUE)
+        super().__init__(constants.FIBONACI_QUEUE)
 
     def fib(self, n):
         if n == 0:
@@ -22,20 +20,20 @@ class FibonacciRpcServer(utils.BaseRpcServer):
         n = int(body)
         print(f" [.] fib({n})")
         response = self.fib(n)
+
+        # replies back to the client in a queue to which client is listening
+        # Note that, reply_to is a property of the message that the client sends
+        # This property defines where the server should send the response
         ch.basic_publish(
             exchange='',
             routing_key=props.reply_to,
-            properties=pika.BasicProperties(
-                correlation_id=props.correlation_id,
-                reply_to=props.reply_to,
-            ),
             body=str(response)
         )
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
-class AdditionRpcServer(utils.BaseRpcServer):
+class AdditionServer(utils.BaseRpcServer):
     def __init__(self):
-        super().__init__('rpc_addition_queue')
+        super().__init__(constants.ADDITION_QUEUE)
 
     def add(self, x, y):
         import time
@@ -52,28 +50,29 @@ class AdditionRpcServer(utils.BaseRpcServer):
 
         print(f" [X] (Process: {process_name}) (PID: {process_id}) => add({x}, {y}) => {response}")
         
-        # publish and acknowledge
+        # replies back to the client in a queue to which client is listening
+        # Note that, reply_to is a property of the message that the client sends
+        # This property defines where the server should send the response
         ch.basic_publish(
             exchange='',
             routing_key=props.reply_to,
-            properties=pika.BasicProperties(correlation_id=props.correlation_id),
             body=str(response)
         )
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def run_fibonacci_server():
-    server = FibonacciRpcServer()
+    server = FibonacciServer()
     server.start()
 
 def run_addition_server():
-    server = AdditionRpcServer()
+    server = AdditionServer()
     server.start()
 
 if __name__ == "__main__":
     # Create a process pool to run both RPC servers in parallel
     process_pool = []
 
-    print("Staritng RPC servers...")
+    print("Staritng Worker servers...")
 
     for i in range(2):
         fibonaci_server_process = multiprocessing.Process(target=run_fibonacci_server, name=f"FibonacciServer-{i}")

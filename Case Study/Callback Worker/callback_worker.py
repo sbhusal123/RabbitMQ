@@ -3,7 +3,7 @@ import utils
 
 import multiprocessing
 
-class CallBackWorker(utils.BaseRpcServer):
+class CallBackWorker(utils.BaseServer):
     def __init__(self, queue_name):
         super().__init__(queue_name=queue_name)
 
@@ -35,14 +35,14 @@ if __name__ == "__main__":
     for i in range(2):
         fibonaci_callback_worker = multiprocessing.Process(
             target=run_callback_worker,
-            args=(constants.FIBONACI_CALLBACK_RPC_QUEUE,),
+            args=(constants.FIBONACI_CALLBACK_QUEUE,),
             name=f"FibonacciCallbackWorker-{i}"
         )
 
         addition_callback_worker = multiprocessing.Process(
             target=run_callback_worker,
-            args=(constants.ADDITION_CALLBACK_RPC_QUEUE,),
-            name=f"FibonacciCallbackWorker-{i}"
+            args=(constants.ADDITION_CALLBACK_QUEUE,),
+            name=f"AdditionCallbackWorker-{i}"
         )
 
         process.append(fibonaci_callback_worker)
@@ -53,5 +53,5 @@ if __name__ == "__main__":
     
     for p in process:
         p.join()
-    
+
 
